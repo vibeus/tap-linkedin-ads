@@ -16,8 +16,7 @@ LINKEDIN_VERSION = '202403'
 
 # set default timeout of 300 seconds
 REQUEST_TIMEOUT = 300
-LINKEDIN_VERSION = '202302'
-
+LINKEDIN_VERSION = '202403'
 
 class LinkedInError(Exception):
     pass
