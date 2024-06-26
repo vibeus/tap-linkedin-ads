@@ -112,6 +112,47 @@ def transform_analytics(data_dict):
     return data_dict
 
 
+def transform_statistics(data_dict):
+    # convert string numbers to float/decimal numbers
+    currency_fields = ['conversion_value_in_local_currency',
+                       'cost_in_local_currency',
+                       'cost_in_usd']
+    for currency_field in currency_fields:
+        if currency_field in data_dict:
+            val = data_dict[currency_field]
+            data_dict[currency_field] = string_to_decimal(val)
+    # create pivot id and urn fields from pivot and pivot_value
+    if 'pivot_values' in data_dict:
+        for pivot_value in data_dict['pivot_values']:
+            for regex in ['^urn:li:sponsored(.*):(.*)$', '^urn:lla:llaPartner(.*):(.*)$']:
+                search = re.findall(regex, pivot_value)
+                if search:
+                    data_dict[convert(search[0][0])+'_id'] = search[0][1]
+                    LOGGER.info(f'{data_dict}')
+
+    # Create start_at and end_at fields from nested date_range
+    if 'date_range' in data_dict:
+        if 'start' in data_dict['date_range']:
+            if 'day' in data_dict['date_range']['start'] \
+            and 'month' in data_dict['date_range']['start'] \
+            and 'year' in data_dict['date_range']['start']:
+                year = data_dict['date_range']['start']['year']
+                month = data_dict['date_range']['start']['month']
+                day = data_dict['date_range']['start']['day']
+                start_at = datetime(year=year, month=month, day=day)
+                data_dict['start_at'] = start_at.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        if 'end' in data_dict['date_range']:
+            if 'day' in data_dict['date_range']['end'] \
+            and 'month' in data_dict['date_range']['end'] \
+            and 'year' in data_dict['date_range']['end']:
+                year = data_dict['date_range']['end']['year']
+                month = data_dict['date_range']['end']['month']
+                day = data_dict['date_range']['end']['day']
+                end_at = datetime(year=year, month=month, day=day) + timedelta(days=1)
+                data_dict['end_at'] = end_at.strftime('%Y-%m-%dT%H:%M:%SZ')
+    return data_dict
+
+
 def transform_campaigns(data_dict): #pylint: disable=too-many-branches,too-many-statements
     # convert string numbers to float/decimal numbers
     currency_fields = ['daily_budget', 'unit_cost']
@@ -294,6 +335,25 @@ def transform_urn(data_dict):
     return data_dict
 
 
+def transform_video_ads(data_dict):
+    # pylint: disable=fixme
+    # TODO: To be removed in next major version release
+    if 'author' in data_dict:
+        data_dict['owner'] = data_dict["author"]
+    if 'id' in data_dict:
+        data_dict['content_reference'] = data_dict["id"]
+    if 'ad_context' in data_dict:
+        if 'dsc_name' in data_dict['ad_context']:
+            data_dict['name'] = data_dict["ad_context"]['dsc_name']
+        if 'dsc_ad_type' in data_dict['ad_context']:
+            data_dict['type'] = data_dict["ad_context"]['dsc_ad_type']
+        if 'dsc_ad_account' in data_dict['ad_context']:
+            data_dict['account'] = data_dict["ad_context"]['dsc_ad_account']
+    if 'last_modified_at' in data_dict:
+        data_dict['last_modified_time'] = data_dict["last_modified_at"]
+    if 'created_at' in data_dict:
+        data_dict['created_time'] = data_dict["created_at"]
+    return data_dict
 
 def transform_data(data_dict, stream_name):
     new_dict = data_dict
@@ -302,12 +362,16 @@ def transform_data(data_dict, stream_name):
         this_dict = record
         if stream_name.startswith('ad_analytics_by_'):
             this_dict = transform_analytics(this_dict)
+        elif stream_name.startswith('ad_statistics_by_'):
+            this_dict = transform_statistics(this_dict)
         elif stream_name == 'accounts':
             this_dict = transform_accounts(this_dict)
         elif stream_name == 'campaigns':
             this_dict = transform_campaigns(this_dict)
         elif stream_name == 'creatives':
             this_dict = transform_creatives(this_dict)
+        elif stream_name == 'video_ads':
+            this_dict = transform_video_ads(this_dict)
         this_dict = transform_urn(this_dict)
         this_dict = transform_audit_fields(this_dict)
 
