@@ -100,6 +100,12 @@
         "string"
       ]
     },
+    "conversion_value_in_local_currency": {
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
     "external_website_conversions": {
       "type": [
         "null",

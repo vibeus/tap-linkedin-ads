@@ -875,7 +875,7 @@ class AdStatisticsByCreativeAndConversion(LinkedInAds):
         "q": "statistics",
         "pivots": 'List(CONVERSION,CREATIVE,CAMPAIGN)',
         "timeGranularity": "DAILY",
-        "fields":"externalWebsiteConversions,externalWebsitePostClickConversions,externalWebsitePostViewConversions,costInLocalCurrency,externalWebsiteConversions,costInLocalCurrency,dateRange,pivotValues",
+        "fields":"externalWebsiteConversions,externalWebsitePostClickConversions,externalWebsitePostViewConversions,conversionValueInLocalCurrency,costInLocalCurrency,externalWebsiteConversions,costInLocalCurrency,dateRange,pivotValues",
         "count": 10000
     }
     headers = {'X-Restli-Protocol-Version': "2.0.0"}
