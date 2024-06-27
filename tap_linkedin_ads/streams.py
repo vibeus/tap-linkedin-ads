@@ -866,7 +866,7 @@ class AdStatisticsByCreativeAndConversion(LinkedInAds):
     tap_stream_id = "ad_statistics_by_creative_and_conversion"
     replication_method = "INCREMENTAL"
     replication_keys = ["end_at"]
-    key_properties = ["creative_id", "start_at"]
+    key_properties = ["campaign_id", "creative_id", "conversion_id", "start_at"]
     account_filter = "accounts_param"
     path = "adAnalytics"
     foreign_key = "id"
