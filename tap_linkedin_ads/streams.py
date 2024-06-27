@@ -484,7 +484,7 @@ class LinkedInAds:
         bookmark_field = next(iter(self.replication_keys))
 
         max_bookmark_value = last_datetime
-        last_datetime_dt = strptime_to_utc(last_datetime) - timedelta(days=7)
+        last_datetime_dt = strptime_to_utc(last_datetime) - timedelta(days=90)
 
         # Prepare date window for API call
         window_start_date = last_datetime_dt.date()
@@ -596,7 +596,7 @@ class LinkedInAds:
         bookmark_field = next(iter(self.replication_keys))
         last_datetime = self.get_bookmark(state, start_date)
         max_bookmark_value = last_datetime
-        last_datetime_dt = strptime_to_utc(last_datetime) - timedelta(days=7)
+        last_datetime_dt = strptime_to_utc(last_datetime) - timedelta(days=90)
 
         # Prepare date window for API call
         window_start_date = last_datetime_dt.date()
