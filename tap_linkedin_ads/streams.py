@@ -146,12 +146,16 @@ def merge_responses(pivot, data):
         # Loop through each record of the page
         for element in page:
             temp_start = element['dateRange']['start']
-            temp_pivotValue = element['pivotValues'][0]
+            temp_pivotValue = element['pivotValues']
             # adding pivot and pivot_value to make it compatible with the previous tap version
             element['pivot'] = pivot
-            element["pivot_value"] = temp_pivotValue
+            if len(temp_pivotValue) == 1:
+                element["pivot_value"] = temp_pivotValue[0]
+            else:
+                element["pivot_value"] = ','.join(temp_pivotValue)
             string_start = '{}-{}-{}'.format(temp_start['year'], temp_start['month'], temp_start['day'])
-            primary_key = (temp_pivotValue, string_start)
+            primary_key = tuple(temp_pivotValue + [string_start])
+
             if primary_key in full_records:
                 # Update existing record with same primary key
                 full_records[primary_key].update(element)
@@ -869,7 +873,6 @@ class AdStatisticsByCreativeAndConversion(LinkedInAds):
     key_properties = ["campaign_id", "creative_id", "conversion_id", "start_at"]
     account_filter = "accounts_param"
     path = "adAnalytics"
-    foreign_key = "id"
     data_key = "elements"
     params = {
         "q": "statistics",
