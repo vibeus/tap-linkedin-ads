@@ -149,10 +149,7 @@ def merge_responses(pivot, data):
             temp_pivotValue = element['pivotValues']
             # adding pivot and pivot_value to make it compatible with the previous tap version
             element['pivot'] = pivot
-            if len(temp_pivotValue) == 1:
-                element["pivot_value"] = temp_pivotValue[0]
-            else:
-                element["pivot_value"] = ','.join(temp_pivotValue)
+            element["pivot_value"] = ','.join(temp_pivotValue)
             string_start = '{}-{}-{}'.format(temp_start['year'], temp_start['month'], temp_start['day'])
             primary_key = tuple(temp_pivotValue + [string_start])
 
