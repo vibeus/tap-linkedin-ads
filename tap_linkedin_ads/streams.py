@@ -667,7 +667,7 @@ class LinkedInAds:
                 for page in sync_analytics_endpoint(client, self.tap_stream_id, self.path, query_string, self.headers):
                     if page.get(self.data_key):
                         responses.append(page.get(self.data_key))
-            pivot = params["pivot"] if "pivot" in params.keys() else None
+            pivot = params.get("pivots", params.get("pivot", None))
             raw_records = merge_responses(pivot, responses)
             time_extracted = utils.now()
 
