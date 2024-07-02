@@ -128,7 +128,6 @@ def transform_statistics(data_dict):
                 search = re.findall(regex, pivot_value)
                 if search:
                     data_dict[convert(search[0][0])+'_id'] = search[0][1]
-                    LOGGER.info(f'{data_dict}')
 
     # Create start_at and end_at fields from nested date_range
     if 'date_range' in data_dict:
